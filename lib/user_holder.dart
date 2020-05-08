@@ -1,6 +1,6 @@
 import 'package:skill_branch_flutter/models/user.dart';
 
-import 'string_utils.dart';
+import 'string_util.dart';
 
 class UserHolder {
   Map<String, User> users = {};
