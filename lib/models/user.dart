@@ -104,9 +104,8 @@ class User {
   @override
   String toString() {
     return """
-    '
     name: $name
-    email: #email
+    email: $email
     friends: ${friends.toList()}
     """;
   }
