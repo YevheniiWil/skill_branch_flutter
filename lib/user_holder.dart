@@ -1,4 +1,4 @@
-import 'package:skill_branch_flutter/models/user.dart';
+import "models/user.dart";
 
 import 'string_util.dart';
 
