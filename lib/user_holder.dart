@@ -1,6 +1,6 @@
-import "package:FlutterGalleryApp/models/user.dart";
+import 'models/user.dart';
 
-import 'string_util.dart';
+
 
 class UserHolder {
   Map<String, User> users = {};
@@ -10,10 +10,58 @@ class UserHolder {
 
     print(user.toString());
 
-    if(!users.containsKey(user.login)){
+    if (!users.containsKey(user.login)) {
       users[user.login] = user;
     } else {
-      throw Exception ('A user with this name alredy exists');
+      throw Exception("A user with this name already exists");
     }
+  }
+
+  User registerUserByPhone(String name, String phone) {
+    User user = User(name: name, phone: phone);
+    if (!users.containsKey(user.login)) {
+      users[user.login] = user;
+      return user;
+    } else {
+      throw Exception("A user with this name already exists");
+    }
+  }
+
+  User registerUserByEmail(String name, String email) {
+    User user = User(name: name, email: email);
+    if (!users.containsKey(user.login)) {
+      users[user.login] = user;
+      return user;
+    } else {
+      throw Exception("A user with this name already exists");
+    }
+  }
+
+  void setFriends(String login, List<User> friends) {
+    users[login].friends.addAll(friends);
+  }
+
+  User findUserInFriends(String login, User user) {
+    return users[login].searchUser(user);
+  }
+
+  User getUserByLogin(String login) {
+    return users[login];
+  }
+
+  List<User> importUsers(List<String> strings) {
+    List<User> users = List();
+    if (strings.isNotEmpty) {
+      strings.forEach((string) => users.add(splitString(string)));
+    }
+    return users;
+  }
+
+  User splitString(String string) {
+    List<String> spitString = string.split(";\n");
+    String name = spitString[0].trim();
+    String email = spitString[1].trim();
+    String phone = spitString[2].trim();
+    return User(name: name, email: email, phone: phone);
   }
 }
