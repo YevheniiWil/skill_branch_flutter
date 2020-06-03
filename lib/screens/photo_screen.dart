@@ -3,14 +3,17 @@ import 'package:FlutterGalleryApp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'feed_screen.dart';
+
 class FullScreenImage extends StatefulWidget {
 
-   static const  String link =
-      'https://www.interfax.ru/ftproot/photos/photostory/2019/10/16/wild1_700.jpg';
-  static const String description =
-      'bla bla ';
-  
+  final Animation<double> transitionAnimation;
+
+  static const String link = 'https://www.interfax.ru/ftproot/photos/photostory/2019/10/16/wild1_700.jpg';
+  static const String description = ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
   final String name;
+  final int index;
   final String userName;
   final String altDescription;
   final String photo;
@@ -18,11 +21,12 @@ class FullScreenImage extends StatefulWidget {
 
   FullScreenImage(
       {this.name = "",
+        this.index,
       this.userName = "",
-      this.altDescription = "Beautiful girl in a yellow dress with a flower on her head in the summer in the forest",
+      this.altDescription = "",
       this.photo = link,
       this.userPhoto = link,
-      Key key})
+      Key key, this.transitionAnimation})
       : super(key: key);
 
   @override
@@ -31,14 +35,37 @@ class FullScreenImage extends StatefulWidget {
   }
 }
 
-class _FullScreenImage extends State<FullScreenImage> {
+class _FullScreenImage extends State<FullScreenImage>  with TickerProviderStateMixin {
+
+  AnimationController controller;
+Animation<double> animation;
+
+initState() {
+  super.initState();
+  controller = AnimationController(
+      duration: const Duration(milliseconds: 1000), vsync: this);
+  animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+
+  animation.addStatusListener((status) {
+    if (status == AnimationStatus.dismissed) {
+        controller.forward();
+      }
+    });
+
+  controller.forward();
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
       body: Column(
         children: <Widget>[
-          Photo(photoLink: widget.photo, key: Key('Photo')),
+          Hero(
+            tag: "heroTag ${widget.index}",
+          child : Photo(photoLink: kFlutterDash, key: Key('Photo')),
+          ),
           Padding(
             padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
             child: Text(
@@ -48,7 +75,13 @@ class _FullScreenImage extends State<FullScreenImage> {
               style: AppStyles.h3,
             ),
           ),
-          _photo(),
+            Container(
+              child: FadeTransition(
+                opacity: animation,
+                child: _photo(),
+              ),
+            ),
+
           _buttons(),
         ],
       ),
@@ -65,31 +98,27 @@ class _FullScreenImage extends State<FullScreenImage> {
       ),
       backgroundColor: AppColors.white,
       leading: IconButton(
-        color: AppColors.alto,
-        icon: Icon( CupertinoIcons.back),
+        icon: Icon(CupertinoIcons.back),
         onPressed: () {},
       ),
     );
   }
 
   Widget _photo() {
-    return Row(
-      
+    return  Row(
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(left: 20), 
-          child: UserAvatar(imageLink: widget.userPhoto),
-          ),         
+        UserAvatar(widget.userPhoto),
         Column(
           children: <Widget>[
             Text(
-              widget.name,
+              //widget.name
+              "Yevhenii",
               style: AppStyles.h1Black,
             ),
             Text(
-              '@${widget.userName}',
+              '@Yevhenii',
               style: AppStyles.h5Black,
-            )
+            ),
           ],
         ),
       ],
@@ -146,4 +175,5 @@ class _FullScreenImage extends State<FullScreenImage> {
   }
 
   void someMethod() {}
+
 }
